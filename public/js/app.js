@@ -22,6 +22,7 @@
     .querySelector(".chat__screen #send__message")
     .addEventListener("click", () => {
       let message = app.querySelector(".chat__screen #message__input").value;
+
       if (message.length == 0) {
         return;
       }
@@ -36,4 +37,59 @@
       });
       app.querySelector(".chat__screen #message__input").value = "";
     });
+
+  app
+    .querySelector(".chat__screen #exit__chat")
+    .addEventListener("click", () => {
+      socket.emit("exituser", uname);
+      window.location.href = window.location.href;
+    });
+
+  socket.on("update", (update) => {
+    renderMsg("update", update);
+  });
+  socket.on("chat", (update) => {
+    renderMsg("other", update);
+  });
+
+  function renderMsg(type, msg) {
+    let msgContainer = document.querySelector(".chat__screen .messages");
+
+    if (type == "my") {
+      let el = document.createElement("div");
+      el.setAttribute("class", "message my__message");
+      el.innerHTML = `
+            <div>
+                <div class="name">you</div>
+                <div class="text">${msg.text}</div>
+            </div>
+            
+            `;
+
+      console.log(el);
+      msgContainer.appendChild(el);
+    } else if (type == "other") {
+      let el = document.createElement("div");
+      el.setAttribute("class", "message other__message");
+      el.innerHTML = `
+            <div class="message my__message">
+                <div class="name">${msg.username}</div>
+                <div class="text">${msg.text}</div>
+            </div>
+            
+            `;
+
+      msgContainer.innerHTML = el;
+    } else if (type == "update") {
+      let el = document.createElement("div");
+      el.setAttribute("class", "update");
+      el.innerHTML = message;
+
+      msgContainer.appendChild(el);
+    }
+    //scroll chat to end
+
+    msgContainer.scrollTop =
+      msgContainer.scrollHeight - msgContainer.clientHeight;
+  }
 })();
