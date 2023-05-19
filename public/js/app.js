@@ -14,6 +14,10 @@
       socket.emit("username", username);
 
       uname = username;
+
+      //make a post request to the server to save the name of the client
+      // console.log(uname);
+
       app.querySelector(".join__screen").classList.remove("active");
       app.querySelector(".chat__screen").classList.add("active");
     });
@@ -48,10 +52,12 @@
   socket.on("update", (update) => {
     renderMsg("update", update);
   });
-  socket.on("chat", (update) => {
-    renderMsg("other", update);
+
+  socket.on("chat", (message) => {
+    renderMsg("other", message);
   });
 
+  //function to render messages
   function renderMsg(type, msg) {
     let msgContainer = document.querySelector(".chat__screen .messages");
 
@@ -65,8 +71,6 @@
             </div>
             
             `;
-
-      console.log(el);
       msgContainer.appendChild(el);
     } else if (type == "other") {
       let el = document.createElement("div");
@@ -79,11 +83,11 @@
             
             `;
 
-      msgContainer.innerHTML = el;
+      msgContainer.appendChild(el);
     } else if (type == "update") {
       let el = document.createElement("div");
       el.setAttribute("class", "update");
-      el.innerHTML = message;
+      el.innerText = msg;
 
       msgContainer.appendChild(el);
     }
