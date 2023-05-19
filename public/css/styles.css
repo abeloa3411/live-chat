@@ -121,11 +121,11 @@ body {
 }
 
 .chat__screen .messages .message.my__message {
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .chat__screen .messages .message.other__message {
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .chat__screen .messages .message.text {

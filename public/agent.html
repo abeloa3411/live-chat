@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent</title>
+  </head>
+  <body>
+    <main class="app">
+      <div class="screen join__screen active">
+        <div class="form">
+          <h2>Enter name to talk to an agent</h2>
+          <div class="form__input">
+            <label for="username">Username</label>
+            <input type="text" id="username" />
+          </div>
+          <div class="form__input">
+            <button id="join__user">join</button>
+          </div>
+        </div>
+      </div>
+      <div class="screen chat__screen">
+        <div class="header">
+          <div class="logo">chatroom</div>
+          <button id="exit__chat">exit</button>
+        </div>
+        <div class="messages"></div>
+        <div class="type__box">
+          <input type="text" id="message__input" />
+          <button id="send__message">send</button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

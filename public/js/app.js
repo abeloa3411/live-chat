@@ -11,7 +11,7 @@
       if (username.length == 0) {
         return;
       }
-      socket.emit("username", username);
+      socket.emit("newuser", username);
 
       uname = username;
 
@@ -76,7 +76,7 @@
       let el = document.createElement("div");
       el.setAttribute("class", "message other__message");
       el.innerHTML = `
-            <div class="message my__message">
+            <div class="message other__message">
                 <div class="name">${msg.username}</div>
                 <div class="text">${msg.text}</div>
             </div>
