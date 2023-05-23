@@ -8,32 +8,33 @@
     <title>Live Chat</title>
   </head>
   <body>
-    <main class="app">
-      <div class="screen join__screen active">
-        <div class="form">
-          <h2>Enter name to talk to an agent</h2>
-          <div class="form__input">
+    <div class="join-container">
+      <main class="join-main">
+        <form action="agent.html">
+          <div class="form-control">
             <label for="username">Username</label>
-            <input type="text" id="username" />
+            <input
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Enter username..."
+              required
+            />
           </div>
-          <div class="form__input">
-            <button id="join__user">join</button>
+          <div class="form-control">
+            <label for="room">Agent</label>
+            <select name="room" id="room">
+              <option value="JavaScript">JavaScript</option>
+              <option value="Python">Python</option>
+              <option value="PHP">PHP</option>
+              <option value="C#">C#</option>
+              <option value="Ruby">Ruby</option>
+              <option value="Java">Java</option>
+            </select>
           </div>
-        </div>
-      </div>
-      <div class="screen chat__screen">
-        <div class="header">
-          <div class="logo">chatroom</div>
-          <button id="exit__chat">exit</button>
-        </div>
-        <div class="messages"></div>
-        <div class="type__box">
-          <input type="text" id="message__input" />
-          <button id="send__message">send</button>
-        </div>
-      </div>
-    </main>
-    <script src="socket.io/socket.io.js"></script>
-    <script src="./js/app.js"></script>
+          <button type="submit" class="btn">Join Chat</button>
+        </form>
+      </main>
+    </div>
   </body>
 </html>
