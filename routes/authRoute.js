@@ -1,8 +1,9 @@
 import express from "express";
-import { registerAgent } from "../controllers/authController";
+import { agentLogin, agentSignup } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.route("/register").post(registerAgent);
+router.route("/register").post(agentSignup);
+router.route("/register").post(agentLogin);
 
 export default router;

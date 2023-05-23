@@ -2,17 +2,23 @@ import express from "express";
 import http from "http";
 import path from "path";
 import { Server } from "socket.io";
-import connectDB from "./db/db";
+import connectDB from "./db/db.js";
 import cors from "cors";
-import authRotes from "./routes/authRoute.js";
+import authRoutes from "./routes/authRoute.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 const app = express();
+
+dotenv.config();
 
 const server = http.createServer(app);
 
 const io = new Server(server);
 
 const __dirname = path.resolve();
+
+const PORT = process.env.PORT;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -31,7 +37,11 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("chat", message);
   });
 });
-server.listen(5000, () => {
-  connectDB(process.env.MONGO_URI);
-  console.log("listening on port 5000");
-});
+
+mongoose.set("strictQuery", true);
+
+connectDB(process.env.MONGO_URI)
+  .then(() => {
+    server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+  })
+  .catch((err) => console.log(err));
