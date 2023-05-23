@@ -7,6 +7,8 @@ import cors from "cors";
 import authRoutes from "./routes/authRoute.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { fomartMessage } from "./utils/conversation.js";
+import { getCurrentUser, userJoin } from "./utils/users.js";
 
 const app = express();
 
@@ -27,14 +29,25 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 
 io.on("connection", (socket) => {
-  socket.on("newuser", (username) => {
-    socket.broadcast.emit("update", username + " joined the conversation");
+  socket.on("connectAgent", ({ username, room }) => {
+    const user = userJoin(socket.id, username, room);
+
+    socket.join(user.room);
+
+    socket.emit("message", fomartMessage("Agent", "Welcome to agent services"));
+
+    socket.broadcast
+      .to(user.room)
+      .emit("message", fomartMessage("Agent", `${username} joined`));
   });
-  socket.on("exituser", (username) => {
-    socket.broadcast.emit("update", username + " left the conversation");
+
+  socket.on("disconect", () => {
+    io.emit("message", fomartMessage("Agent", "User has left"));
   });
-  socket.on("chat", (message) => {
-    socket.broadcast.emit("chat", message);
+
+  socket.on("conversation", (msg) => {
+    const user = getCurrentUser(socket.id);
+    io.to(user.room).emit("message", fomartMessage(user.username, msg));
   });
 });
 
