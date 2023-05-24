@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
   });
 
   //user disconects from the chat
-  socket.on("disconect", () => {
+  socket.on("disconnect", () => {
     const user = userLeaves(socket.id);
     if (user) {
       io.to(user.room).emit(
