@@ -8,7 +8,12 @@ import authRoutes from "./routes/authRoute.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { fomartMessage } from "./utils/conversation.js";
-import { getCurrentUser, userJoin } from "./utils/users.js";
+import {
+  getCurrentUser,
+  getRoomUser,
+  userJoin,
+  userLeaves,
+} from "./utils/users.js";
 
 const app = express();
 
@@ -29,6 +34,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 
 io.on("connection", (socket) => {
+  //connect to the chat
   socket.on("connectAgent", ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
 
@@ -38,16 +44,35 @@ io.on("connection", (socket) => {
 
     socket.broadcast
       .to(user.room)
-      .emit("message", fomartMessage("Agent", `${username} joined`));
+      .emit("message", fomartMessage("Agent", `${user.username} joined`));
+
+    //send users info
+    io.to(user.room).emit("roomUsers", {
+      room: user.room,
+      user: getRoomUser(user.room),
+    });
   });
 
-  socket.on("disconect", () => {
-    io.emit("message", fomartMessage("Agent", "User has left"));
-  });
-
+  //user chats
   socket.on("conversation", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("message", fomartMessage(user.username, msg));
+  });
+
+  //user disconects from the chat
+  socket.on("disconect", () => {
+    const user = userLeaves(socket.id);
+    if (user) {
+      io.to(user.room).emit(
+        "message",
+        fomartMessage("Agent", `${user.username} left`)
+      );
+
+      io.to(user.room).emit("roomUsers", {
+        room: user.room,
+        user: getRoomUser(user.room),
+      });
+    }
   });
 });
 
