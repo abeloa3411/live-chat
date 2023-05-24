@@ -40,7 +40,10 @@ io.on("connection", (socket) => {
 
     socket.join(user.room);
 
-    socket.emit("message", fomartMessage("Agent", "Welcome to agent services"));
+    socket.emit(
+      "message",
+      fomartMessage("Agent", " Welcome to our chat helpline")
+    );
 
     socket.broadcast
       .to(user.room)
