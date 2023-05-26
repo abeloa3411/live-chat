@@ -14,6 +14,7 @@ import {
   userJoin,
   userLeaves,
 } from "./utils/users.js";
+import Chat from "./models/chatModel.js";
 
 const app = express();
 
@@ -50,7 +51,7 @@ io.on("connection", (socket) => {
 
     socket.broadcast
       .to(user.room)
-      .emit("message", fomartMessage("Agent", `${user.username} joined`));
+      .emit("message", fomartMessage("Agent", ` ${user.username} joined`));
 
     //send users info
     io.to(user.room).emit("roomUsers", {

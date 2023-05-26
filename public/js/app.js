@@ -14,7 +14,6 @@ socket.emit("connectAgent", { username, room });
 
 //get message from server
 socket.on("message", (message) => {
-  console.log(message);
   outputConversation(message);
 
   //scroll down
@@ -25,7 +24,6 @@ socket.on("message", (message) => {
 socket.on("roomUsers", ({ room, user }) => {
   outputRoomName(room);
   outputUsers(user);
-  console.log({ room, user });
 });
 
 //message submit
@@ -50,7 +48,7 @@ function outputConversation(message) {
   const p = document.createElement("p");
   p.classList.add("meta");
   p.innerText = message.username;
-  p.innerHTML += `<span>${message.time}</span>`;
+  p.innerHTML += `<span> ${message.time}</span>`;
   div.appendChild(p);
   const para = document.createElement("p");
   para.classList.add("text");
