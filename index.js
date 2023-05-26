@@ -42,7 +42,10 @@ io.on("connection", (socket) => {
 
     socket.emit(
       "message",
-      fomartMessage("Agent", " Welcome to our chat helpline")
+      fomartMessage(
+        "Agent",
+        " Hello, welcome to Super Awesome Co. How may I help you?"
+      )
     );
 
     socket.broadcast
