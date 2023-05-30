@@ -55,6 +55,21 @@ connectDB(process.env.MONGO_URI)
           .to(user.room)
           .emit("message", fomartMessage("Agent", ` ${user.username} joined`));
 
+        //get chats from database
+        let chat = async function getChats() {
+          const chats = await Chat.find();
+
+          return chats;
+        };
+
+        chat()
+          .then((chat) => {
+            const filtered = chat.filter((item) => item.room === user.room);
+
+            console.log(filtered);
+          })
+          .catch((err) => console.log(err));
+
         //send users info
         io.to(user.room).emit("roomUsers", {
           room: user.room,
