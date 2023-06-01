@@ -12,10 +12,15 @@ const { username, room } = Qs.parse(location.search, {
 //join room
 socket.emit("connectAgent", { username, room });
 
-//get message from server
-socket.on("message", (message) => {
+// get message from server
+socket.on("oldMessage", (message) => {
   outputConversation(message);
+  //scroll down
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+});
 
+socket.on("message", (message) => {
+  outputNewMsg(message);
   //scroll down
   chatMessages.scrollTop = chatMessages.scrollHeight;
 });
@@ -42,7 +47,7 @@ chatForm.addEventListener("submit", (e) => {
   e.target.elements.msg.focus();
 });
 
-function outputConversation(message) {
+function outputNewMsg(message) {
   const div = document.createElement("div");
   div.classList.add("message");
   const p = document.createElement("p");
@@ -55,6 +60,22 @@ function outputConversation(message) {
   para.innerText = message.text;
   div.appendChild(para);
   document.querySelector(".chat-messages").appendChild(div);
+}
+
+function outputConversation(message) {
+  const chatMessages = document.querySelector(".chat-messages");
+
+  let chatBox = message
+    .map((msg) => {
+      return `<div class="message">
+     <p class="meta">${msg.name}<span>${msg.time}</span></p>
+     <p class="text">${msg.content}</p>
+    </div>
+    `;
+    })
+    .join("");
+
+  chatMessages.innerHTML = chatBox;
 }
 
 // Add room name to DOM

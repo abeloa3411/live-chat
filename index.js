@@ -15,6 +15,7 @@ import {
   userLeaves,
 } from "./utils/users.js";
 import Chat from "./models/chatModel.js";
+import moment from "moment";
 
 const app = express();
 
@@ -66,7 +67,7 @@ connectDB(process.env.MONGO_URI)
           .then((chat) => {
             const filtered = chat.filter((item) => item.room === user.room);
 
-            console.log(filtered);
+            io.to(user.room).emit("oldMessage", filtered);
           })
           .catch((err) => console.log(err));
 
@@ -86,6 +87,7 @@ connectDB(process.env.MONGO_URI)
           name: user.username,
           content: msg,
           room: user.room,
+          time: moment().format("h:mm a"),
         });
 
         newChat.save();
