@@ -113,6 +113,7 @@ a {
 
 .chat-messages .message .meta span {
   color: #777;
+  margin-left: 5px;
 }
 
 .chat-form-container {
