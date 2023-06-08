@@ -30,10 +30,20 @@ const __dirname = path.resolve();
 const PORT = process.env.PORT;
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(cors());
 app.use("/api/auth", authRoutes);
+
+if (process.env.environment === "production") {
+  app.use(express.static(path.join(__dirname, "public")));
+  app.get("*", (req, res) => {
+    res.send(path.join(__dirname, "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("hey there API is running");
+  });
+}
 
 connectDB(process.env.MONGO_URI)
   .then(() => {
@@ -116,4 +126,4 @@ connectDB(process.env.MONGO_URI)
   })
   .catch((err) => console.log(err));
 
-//when sockets are running can you perfom asyncronous requests
+export default app;
