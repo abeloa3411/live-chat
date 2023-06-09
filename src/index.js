@@ -41,7 +41,9 @@ if (process.env.environment === "production") {
   });
 } else {
   app.get("/", (req, res) => {
-    res.send("hey there API is running");
+    res.json({
+      msg: "The api is running well",
+    });
   });
 }
 
