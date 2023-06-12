@@ -1,11 +1,3 @@
-import express from "express";
-import http from "http";
-import path from "path";
-import { Server } from "socket.io";
-import connectDB from "./db/db.js";
-import cors from "cors";
-import authRoutes from "./routes/authRoute.js";
-import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { fomartMessage } from "./utils/conversation.js";
 import {
@@ -15,37 +7,11 @@ import {
   userLeaves,
 } from "./utils/users.js";
 import Chat from "./models/chatModel.js";
+import connectDB from "./db/db.js";
 import moment from "moment";
-
-const app = express();
-
-dotenv.config();
-
-const server = http.createServer(app);
-
-const io = new Server(server);
-
-const __dirname = path.resolve();
+import { io, server } from "./app.js";
 
 const PORT = process.env.PORT;
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
-app.use("/api/auth", authRoutes);
-
-if (process.env.environment === "production") {
-  app.use(express.static(path.join(__dirname, "public")));
-  app.get("*", (req, res) => {
-    res.send(path.join(__dirname, "index.html"));
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.json({
-      msg: "The api is running well",
-    });
-  });
-}
 
 connectDB(process.env.MONGO_URI)
   .then(() => {
@@ -95,14 +61,18 @@ connectDB(process.env.MONGO_URI)
         const user = getCurrentUser(socket.id);
         io.to(user.room).emit("message", fomartMessage(user.username, msg));
 
-        const newChat = new Chat({
-          name: user.username,
-          content: msg,
-          room: user.room,
-          time: moment().format("h:mm a"),
-        });
+        const saveChat = async (user, msg) => {
+          const newChat = await new Chat({
+            name: user.username,
+            content: msg,
+            room: user.room,
+            time: moment().format("h:mm a"),
+          });
 
-        newChat.save();
+          newChat.save();
+        };
+
+        saveChat(user, msg);
       });
 
       //user disconects from the chat
@@ -127,5 +97,3 @@ connectDB(process.env.MONGO_URI)
     server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
   })
   .catch((err) => console.log(err));
-
-export default app;
